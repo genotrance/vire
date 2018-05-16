@@ -1,6 +1,9 @@
+"Vim / Neovim installer and vimrc + plugin manager"
+
+from __future__ import print_function
+
 import argparse
 import datetime
-import github
 import glob
 import io
 import json
@@ -15,6 +18,13 @@ import time
 import traceback
 import winreg
 import zipfile
+
+try:
+    import github
+except ImportError:
+    print("Requires module pygithub")
+
+__version__ = "0.1.0"
 
 class State(object):
     config = ""
@@ -99,7 +109,7 @@ def setup():
     State.vimpath = os.path.join(State.home, State.vimpath)
     State.vimrcpath = os.path.join(State.home, State.vimrcpath)
 
-    State.config = os.path.join(State.home, "vimstall.json")
+    State.config = os.path.join(State.home, ".vire.json")
 
     if "64" in platform.machine():
         Config["bit64"] = True
@@ -112,9 +122,9 @@ def setup():
     parsecli()
 
     if Config["neomode"]:
-        State.packpath = os.path.join(State.nvimpath, "pack", "vimstall", "start")
+        State.packpath = os.path.join(State.nvimpath, "pack", "vire", "start")
     else:
-        State.packpath = os.path.join(State.vimpath, "pack", "vimstall", "start")
+        State.packpath = os.path.join(State.vimpath, "pack", "vire", "start")
 
     os.makedirs(State.packpath, exist_ok=True)
 

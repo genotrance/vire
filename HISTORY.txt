@@ -1,0 +1,4 @@
+v0.1.0 - Initial release
+- Add support for installing Vim and Neovim on Windows
+- Download and setup vimrc from gist or local copy
+- Download all plugins defined in vimrc
