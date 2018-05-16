@@ -3,6 +3,7 @@
 from __future__ import print_function
 
 import argparse
+import ctypes
 import datetime
 import glob
 import io
@@ -27,6 +28,23 @@ try:
     import pathlib
 except:
     import pathlib2 as pathlib
+
+try:
+    import winreg
+except ImportError:
+    try:
+        import _winreg as winreg
+    except ImportError:
+        if os.name == "nt":
+            print("Requires module winreg")
+            sys.exit()
+
+try:
+    import ctypes.wintypes
+except ImportError:
+    if os.name == "nt":
+        print("Requires module ctypes.wintypes")
+        sys.exit()
 
 __version__ = "0.1.0"
 
@@ -198,6 +216,14 @@ def add_to_path():
         winreg.CloseKey(gkey)
         winreg.CloseKey(key)
 
+        SendMessage = ctypes.windll.user32.SendMessageW
+        SendMessage.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.UINT, ctypes.wintypes.WPARAM, ctypes.wintypes.LPVOID
+        SendMessage.restype = ctypes.wintypes.LPARAM
+        HWND_BROADCAST = 0xFFFF
+        WM_SETTINGCHANGE = 0x1A
+
+        SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, u'Environment')
+
 def delete_vim():
     apppath = "vim"
     if Config["neomode"]:
@@ -224,8 +250,6 @@ def get_vim():
         print("Use package manager to install", name)
         return
 
-    import winreg
-
     latest = State.github.get_repo(repo).get_latest_release()
     if State.force or latest.tag_name > Config[version] or Config["bit64"] != CConfig["bit64"]:
         print("Updating", name+":", Config[version] + " => " + latest.tag_name)
@@ -236,8 +260,8 @@ def get_vim():
                     zfilename = download_asset(asset)
                     if zfilename:
                         extract(zfilename, State.home)
-                        Config[version] = latest.tag_name
                         add_to_path()
+                        Config[version] = latest.tag_name
     else:
         print(name, "up to date:", Config[version])
 
