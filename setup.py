@@ -38,7 +38,9 @@ setup(
     keywords = "vim vimrc neovim plugin",
     py_modules = ["vire"],
     install_requires = [
-        "pygithub"
+        "pygithub",
+        'futures;python_version<"3.0"',
+        'pathlib2;python_version<"3.0"'
     ],
     data_files = [
         ("lib/site-packages/vire", [

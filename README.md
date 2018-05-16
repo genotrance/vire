@@ -24,16 +24,27 @@ Vire can be obtained in multiple ways:
 Eventually, Vire will be posted on PyPi enabling a simple:
   `pip install vire`
 
+Or as a regular user:
+  `pip install vire --user`
+
 Until then, one of the following methods can be used:
+
 - Clone the latest source:
   `git clone https://github.com/genotrance/vire`
 
 - Download the latest source ZIP:
   `https://github.com/genotrance/vire/archive/master.zip`
 
-Running requires a few dependencies installed. Vire along with all dependencies
-can be installed to the standard Python location using: 
+Vire along with all dependencies can be installed to the standard Python location using: 
   `python setup.py install`
+
+As a regular user, `python setup.py install --user` should work but it will
+require adding `%APPDATA%\Roaming\Python\PythonVER\Scripts` or `~/.local/bin`
+to the path.
+
+Vire can also be used without installation with `python vire.py` but will require
+all dependencies to be installed manually.
+  `pip install pygithub`
 
 After installation, Vire can be run on the command line like an executable.
   `vire -h`
@@ -63,9 +74,11 @@ optional arguments:
 
 ## Dependencies
 
-Vire only requires Python and the PyGithub module at this time.
+Vire only requires Python and the PyGithub module at this time. Setuptools is
+also required if using `setup.py`.
 
-Vire is tested with the Python 3.6 using the Miniconda distribution.
+Vire is tested on Windows with Python 3.6 using the Miniconda distribution and
+on Ubuntu Artful with Python 2.7 and 3.6.
 
 ## Feedback
 

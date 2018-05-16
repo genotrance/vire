@@ -16,13 +16,17 @@ import sys
 import tempfile
 import time
 import traceback
-import winreg
 import zipfile
 
 try:
     import github
 except ImportError:
     print("Requires module pygithub")
+
+try:
+    import pathlib
+except:
+    import pathlib2 as pathlib
 
 __version__ = "0.1.0"
 
@@ -126,7 +130,7 @@ def setup():
     else:
         State.packpath = os.path.join(State.vimpath, "pack", "vire", "start")
 
-    os.makedirs(State.packpath, exist_ok=True)
+    pathlib.Path(State.packpath).mkdir(parents=True, exist_ok=True)
 
 def extract(zfilename, destination):
     print("- Extracting " + os.path.basename(zfilename))
@@ -219,6 +223,8 @@ def get_vim():
         print("Use package manager to install", name)
         return
 
+    import winreg
+
     latest = State.github.get_repo(repo).get_latest_release()
     if State.force or latest.tag_name > Config[version] or Config["bit64"] != CConfig["bit64"]:
         print("Updating", name+":", Config[version] + " => " + latest.tag_name)
@@ -302,7 +308,7 @@ def get_vimrc():
         return
 
     dest = State.nvimrcpath if Config["neomode"] else State.vimrcpath
-    os.makedirs(os.path.dirname(dest), exist_ok=True)
+    pathlib.Path(os.path.dirname(dest)).mkdir(parents=True, exist_ok=True)
     if os.path.exists(Config["vimrc"]):
         print("Copying", Config["vimrc"], "to", dest)
         shutil.copyfile(Config["vimrc"], dest)
@@ -344,6 +350,8 @@ if __name__ == "__main__":
         sys.stdout.write("Exception: ")
         if within_rate_limit():
             print(e)
+    except SystemExit:
+        save()
     except:
         traceback.print_exc(file=sys.stdout)
         save()
