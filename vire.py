@@ -104,7 +104,7 @@ def parsecli():
 def within_rate_limit():
     rl = State.github.get_rate_limit()
     if not rl.rate.remaining:
-        print("Github rate limit exceeded, wait until", str(datetime.timezone.fromutc(rl.rate.reset)))
+        print("Github rate limit exceeded, wait until", str(rl.rate.reset), "GMT")
         return False
 
     return True
@@ -112,6 +112,8 @@ def within_rate_limit():
 def setup():
     global Config
     global CConfig
+
+    State.config = os.path.join(State.home, ".vire.json")
 
     State.github = github.Github()
     if not within_rate_limit():
@@ -129,8 +131,6 @@ def setup():
     State.nvimrcpath = os.path.join(State.home, State.nvimrcpath)
     State.vimpath = os.path.join(State.home, State.vimpath)
     State.vimrcpath = os.path.join(State.home, State.vimrcpath)
-
-    State.config = os.path.join(State.home, ".vire.json")
 
     #if "64" in platform.machine():
     if sys.maxsize != 2147483647:
