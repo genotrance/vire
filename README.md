@@ -3,14 +3,28 @@
 ## What is Vire?
 Vire is a simple Vim / Neovim installer and vimrc + plugin or package manager.
 
-Vire is able to install Vim or Neovim on Windows, leaving installation on Linux
-to the distro package managers. Unlike other plugin managers, it also provides
-a strategy to maintain and maintain a central vimrc, making it simple to keep
-multiple machines in sync.
+First Vire makes it simple to install and keep Vim or Neovim up to date on 
+Windows. Installation on Linux is left to the distro package managers.
 
-Vire also does not depend on the presence of Git which, though typically will
-be available on most machines, might be one too many a requirement simply to
-get your environment up and running.
+Install Vim:
+
+  `vire -i`
+
+Install Neovim:
+
+  `vire -i -n`
+
+Second, it makes it super easy to install your vimrc. The recommended method is
+to maintain the vimrc as a gist on Github. All Vire needs is the gist ID and
+it is able to keep the local copy up to date. All updates can be made on Github
+and simply running Vire on each machine will get everything up to date. This
+strategy makes it simple to keep multiple machines in sync.
+
+  `vire gistID`
+
+Lastly, Vire does what every other plugin manager does - install every plugin
+defined in the vimrc loaded. One advantage of using Vire is that it does not
+depend on Git to load plugins.
 
 Vire only requires Python which is what most modern Vim / Neovim plugins require
 and made most sense to build upon.
@@ -22,20 +36,25 @@ First download and install a Python distribution if not already present.
 Vire can be obtained in multiple ways:
 
 Eventually, Vire will be posted on PyPi enabling a simple:
+
   `pip install vire`
 
 Or as a regular user:
+
   `pip install vire --user`
 
-Until then, one of the following methods can be used:
+Until then, one of the following methods can be used to download:
 
 - Clone the latest source:
+
   `git clone https://github.com/genotrance/vire`
 
 - Download the latest source ZIP:
+
   `https://github.com/genotrance/vire/archive/master.zip`
 
 Vire along with all dependencies can be installed to the standard Python location using: 
+
   `python setup.py install`
 
 As a regular user, `python setup.py install --user` should work but it will
@@ -44,9 +63,11 @@ to the path.
 
 Vire can also be used without installation with `python vire.py` but will require
 all dependencies to be installed manually.
+
   `pip install pygithub`
 
 After installation, Vire can be run on the command line like an executable.
+
   `vire -h`
 
 ## Configuration
@@ -69,8 +90,6 @@ optional arguments:
   -n, --neomode  Neovim mode
   -v, --vimmode  Vim mode [default]
 ```
-
-## Examples
 
 ## Dependencies
 
