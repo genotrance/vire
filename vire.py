@@ -115,7 +115,8 @@ def setup():
 
     State.config = os.path.join(State.home, ".vire.json")
 
-    if "64" in platform.machine():
+    #if "64" in platform.machine():
+    if sys.maxsize != 2147483647:
         Config["bit64"] = True
 
     if os.path.exists(State.config):
