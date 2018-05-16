@@ -29,20 +29,19 @@ try:
 except:
     import pathlib2 as pathlib
 
-try:
-    import winreg
-except ImportError:
+if os.name == "nt":
     try:
-        import _winreg as winreg
+        import winreg
     except ImportError:
-        if os.name == "nt":
+        try:
+            import _winreg as winreg
+        except ImportError:
             print("Requires module winreg")
             sys.exit()
 
-try:
-    import ctypes.wintypes
-except ImportError:
-    if os.name == "nt":
+    try:
+        import ctypes.wintypes
+    except ImportError:
         print("Requires module ctypes.wintypes")
         sys.exit()
 
@@ -324,8 +323,6 @@ def get_plugin(reponame):
             os.rename(pdir, pluginpath)
 
         Config["plugins"][plugin]["sha"] = latest
-
-    time.sleep(1)
 
 def get_vimrc():
     if Config["vimrc"] == "":
