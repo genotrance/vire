@@ -23,11 +23,16 @@ try:
     import github
 except ImportError:
     print("Requires module pygithub")
+    sys.exit()
 
 try:
     import pathlib
-except:
-    import pathlib2 as pathlib
+except ImportError:
+    try:
+        import pathlib2 as pathlib
+    except ImportErrror:
+        print("Requires module pathlib2")
+        sys.exit()
 
 if os.name == "nt":
     try:
