@@ -22,10 +22,11 @@ prevent Python plugins from working.
 Installation on Linux is left to the distro package managers.
 
 Vire also makes it super easy to install your `vimrc`. The recommended method is
-to maintain the `vimrc` as a gist on Github. All Vire needs is the gist ID and
-it is able to keep the local copy up to date. All updates can be made on Github
-and simply running Vire on each machine will get everything up to date. This
-strategy makes it simple to keep multiple machines in sync.
+to maintain the `vimrc` as a gist on Github. [Here's](https://gist.github.com/genotrance/57d327501443f440f522e2c886dadc1b) my vimrc for example.
+All Vire needs is the gist ID and it is able to keep the local copy up to date.
+All updates can be made on Github and simply running Vire on each machine will
+get everything up to date. This strategy makes it simple to keep multiple
+machines in sync.
 
   `vire gistID`
 
