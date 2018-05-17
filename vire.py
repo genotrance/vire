@@ -50,7 +50,7 @@ if os.name == "nt":
         print("Requires module ctypes.wintypes")
         sys.exit()
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 class State(object):
     config = ""
@@ -331,6 +331,10 @@ def get_vimrc():
         return
 
     dest = State.nvimrcpath if Config["neomode"] else State.vimrcpath
+    if Config["vimrcupdated"] == "" and os.path.exists(dest) and not State.force:
+        print("vimrc already exists - run with -f to overwrite")
+        return
+
     pathlib.Path(os.path.dirname(dest)).mkdir(parents=True, exist_ok=True)
     if os.path.exists(Config["vimrc"]):
         print("Copying", Config["vimrc"], "to", dest)
@@ -370,8 +374,11 @@ def main():
             within_rate_limit()
         elif e.status == 404:
             print("Gist ID not found")
+        else:
+            print(e)
     except SystemExit:
         pass
+    except:
         traceback.print_exc(file=sys.stdout)
 
     save()

@@ -76,9 +76,9 @@ or `~/.local/bin` to the path.
 Vire can also be used without installation with `python vire.py` but will require
 all dependencies to be installed manually.
 
-  `pip install pygithub` for Python 3.x
+  `pip install pygithub requests` for Python 3.x
 
-  `pip install pygithub futures pathlib2` for Python 2.x
+  `pip install pygithub requests futures pathlib2` for Python 2.x
 
 After installation, Vire can be run on the command line like an executable.
 
@@ -93,6 +93,14 @@ After installation, Vire can be run on the command line like an executable.
   `vire -i [-n]`
 
 - Post vimrc to Github gist if not already
+
+- Backup and remove any existing configuration files and directories so that
+  Virc can setup from scratch. NOTE: Vire will not overwrite any existing
+  configuration if detected unless told to with `-f`. If forced, the existing
+  `vimrc` will be overwritten and the `pack/vire/start` directory will get
+  cleaned and repopulated with plugins as specified in the `vimrc` provided. Any
+  other directories and files will remain in place and might conflict so it is
+  preferred to start with a clean slate.
 
 - If you want to use Vire for all plugins:
   - Edit vimrc to remove all function calls related to plugin managers like Pathogen,

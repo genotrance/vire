@@ -1,3 +1,11 @@
+v0.1.2 - 5/17/2018
+- Fix issue #1 - handle global try/except correctly
+- Fix issue #2 - add requests as a module dependency
+- Fix issue #3 - avoid overwriting existing vimrc on first run
+
+v0.1.1 - 5/16/2018
+- Fix pip install issue with setup.py on Python 2.x
+
 v0.1.0 - Initial release
 - Add support for installing Vim and Neovim on Windows
 - Download and setup vimrc from gist or local copy
