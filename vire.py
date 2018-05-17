@@ -50,7 +50,7 @@ if os.name == "nt":
         print("Requires module ctypes.wintypes")
         sys.exit()
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 class State(object):
     config = ""

@@ -10,15 +10,11 @@ with open(os.path.join(here, "vire.py")) as f:
             version = line.strip().replace('"', '').split()[-1]
             break
 
-long_description = ""
-with open(os.path.join(here, "README.md")) as f:
-    long_description = f.read().split("\n\n")[1].replace("\n", " ").split("? ")[1]
-
 setup(
     name = "vire",
     version = version,
     description = "Vim / Neovim installer and plugin manager",
-    long_description = long_description,
+    long_description = "Vire is a simple Vim / Neovim installer and vimrc + plugin or package manager.",
     url = "https://github.com/genotrance/vire",
     download_url = "https://github.com/genotrance/vire/archive/%s.tar.gz" % version,
     author = "Ganesh Viswanathan",
