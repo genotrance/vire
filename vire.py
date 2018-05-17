@@ -113,12 +113,6 @@ def setup():
     global Config
     global CConfig
 
-    State.config = os.path.join(State.home, ".vire.json")
-
-    State.github = github.Github()
-    if not within_rate_limit():
-        sys.exit()
-
     if os.name == "nt":
         State.windows = True
         State.home = os.getenv("USERPROFILE")
@@ -131,6 +125,8 @@ def setup():
     State.nvimrcpath = os.path.join(State.home, State.nvimrcpath)
     State.vimpath = os.path.join(State.home, State.vimpath)
     State.vimrcpath = os.path.join(State.home, State.vimrcpath)
+
+    State.config = os.path.join(State.home, ".vire.json")
 
     #if "64" in platform.machine():
     if sys.maxsize != 2147483647:
@@ -149,6 +145,8 @@ def setup():
         State.packpath = os.path.join(State.vimpath, "pack", "vire", "start")
 
     pathlib.Path(State.packpath).mkdir(parents=True, exist_ok=True)
+
+    State.github = github.Github()
 
 def extract(zfilename, destination):
     print("- Extracting " + os.path.basename(zfilename))
@@ -212,16 +210,19 @@ def add_to_path():
             winreg.SetValueEx(key, "PATH", 0, winreg.REG_EXPAND_SZ, value)
             print("- Adding Vim to path: " + vimapppath)
 
+            SendMessageTimeout = ctypes.windll.user32.SendMessageTimeoutW
+            HWND_BROADCAST = 0xFFFF
+            WM_SETTINGCHANGE = 0x1A
+            SMTO_ABORTIFHUNG = 0x0002
+
+            try:
+                SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, 0, "Environment",
+                    SMTO_ABORTIFHUNG, 5000)
+            except ValueError:
+                pass
+
         winreg.CloseKey(gkey)
         winreg.CloseKey(key)
-
-        SendMessage = ctypes.windll.user32.SendMessageW
-        SendMessage.argtypes = ctypes.wintypes.HWND, ctypes.wintypes.UINT, ctypes.wintypes.WPARAM, ctypes.wintypes.LPVOID
-        SendMessage.restype = ctypes.wintypes.LPARAM
-        HWND_BROADCAST = 0xFFFF
-        WM_SETTINGCHANGE = 0x1A
-
-        SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, 0, u'Environment')
 
 def delete_vim():
     apppath = "vim"
@@ -373,7 +374,8 @@ if __name__ == "__main__":
         if within_rate_limit():
             print(e)
     except SystemExit:
-        save()
+        pass
     except:
         traceback.print_exc(file=sys.stdout)
-        save()
+
+    save()
