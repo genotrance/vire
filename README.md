@@ -42,9 +42,7 @@ and made the most sense to build upon.
 
 First download and install a Python distribution if not already present.
 
-Vire can be obtained in multiple ways:
-
-Eventually, Vire will be posted on PyPi enabling a simple:
+Vire can be installed in multiple ways, easiest being from PyPI:
 
   `pip install vire`
 
@@ -52,7 +50,8 @@ Or as a regular user:
 
   `pip install vire --user`
 
-Until then, one of the following methods can be used to download:
+If `pip` isn't available or preferred, one of the following methods can be used
+to download:
 
 - Clone the latest source:
 
@@ -62,19 +61,24 @@ Until then, one of the following methods can be used to download:
 
   `https://github.com/genotrance/vire/archive/master.zip`
 
-Vire along with all dependencies can be installed to the standard Python location
-using:
+Vire along with all dependencies can then be installed to the standard Python
+location using:
 
   `python setup.py install`
 
-As a regular user, `python setup.py install --user` should work but it will
-require adding `%APPDATA%\Roaming\Python\PythonVER\Scripts` or `~/.local/bin`
-to the path.
+Or as a regular user:
+
+  `python setup.py install --user`
+
+Installing Vire as a regular user will require adding `%APPDATA%\Roaming\Python\PythonVER\Scripts`
+or `~/.local/bin` to the path.
 
 Vire can also be used without installation with `python vire.py` but will require
 all dependencies to be installed manually.
 
-  `pip install pygithub`
+  `pip install pygithub` for Python 3.x
+
+  `pip install pygithub futures pathlib2` for Python 2.x
 
 After installation, Vire can be run on the command line like an executable.
 
