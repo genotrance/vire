@@ -20,6 +20,7 @@ setup(
     description = "Vim / Neovim installer and plugin manager",
     long_description = long_description,
     url = "https://github.com/genotrance/vire",
+    download_url = "https://github.com/genotrance/vire/archive/%s.tar.gz" % version,
     author = "Ganesh Viswanathan",
     author_email = "dev@genotrance.com",
     classifiers = [
