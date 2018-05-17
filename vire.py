@@ -271,22 +271,17 @@ def get_vim():
         print(name, "up to date:", Config[version])
 
 def get_gist(vimrcpath):
-    try:
-        gist = State.github.get_gist(Config["vimrc"])
-        if State.force or "vimrcupdated" not in Config or str(gist.updated_at) > Config["vimrcupdated"]:
-            for (gfname, gfile) in gist.files.items():
-                if "vimrc" in gfname:
-                    print("Updating", vimrcpath, "with", gfname)
-                    with open(vimrcpath, "w") as fp:
-                        shutil.copyfileobj(io.StringIO(gfile.content), fp)
-                    Config["vimrcupdated"] = str(gist.updated_at)
-                    break
-        else:
-            print(vimrcpath, "up to date")
-
-    except github.GithubException:
-        print("Unknown gist ID: " + Config["vimrc"])
-        sys.exit()
+    gist = State.github.get_gist(Config["vimrc"])
+    if State.force or "vimrcupdated" not in Config or str(gist.updated_at) > Config["vimrcupdated"]:
+        for (gfname, gfile) in gist.files.items():
+            if "vimrc" in gfname:
+                print("Updating", vimrcpath, "with", gfname)
+                with open(vimrcpath, "w") as fp:
+                    shutil.copyfileobj(io.StringIO(gfile.content), fp)
+                Config["vimrcupdated"] = str(gist.updated_at)
+                break
+    else:
+        print(vimrcpath, "up to date")
 
 def get_plugin(reponame):
     global Plugins
@@ -366,21 +361,20 @@ def save():
         json.dump(Config, fp)
 
 def main():
-    setup()
-    get_vim()
-    get_vimrc()
-    save()
-
-if __name__ == "__main__":
     try:
-        main()
+        setup()
+        get_vim()
+        get_vimrc()
     except github.GithubException as e:
-        sys.stdout.write("Exception: ")
-        if within_rate_limit():
-            print(e)
+        if e.status == 403:
+            within_rate_limit()
+        elif e.status == 404:
+            print("Gist ID not found")
     except SystemExit:
         pass
-    except:
         traceback.print_exc(file=sys.stdout)
 
     save()
+
+if __name__ == "__main__":
+    main()
