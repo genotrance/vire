@@ -50,7 +50,7 @@ if os.name == "nt":
         print("Requires module ctypes.wintypes")
         sys.exit()
 
-__version__ = "0.1.2"
+__version__ = "0.2.0"
 
 class State(object):
     config = ""
@@ -145,7 +145,7 @@ def setup():
     parsecli()
 
     if Config["neomode"]:
-        State.packpath = os.path.join(State.nvimpath, "pack", "vire", "start")
+        State.packpath = os.path.join(State.nvimpath, "site", "pack", "vire", "start")
     else:
         State.packpath = os.path.join(State.vimpath, "pack", "vire", "start")
 
@@ -283,7 +283,25 @@ def get_gist(vimrcpath):
     else:
         print(vimrcpath, "up to date")
 
-def get_plugin(reponame):
+def get_submodules(pluginpath):
+    submodules = os.path.join(pluginpath, ".gitmodules")
+    if os.path.exists(submodules):
+        path = ""
+        url = ""
+        for line in open(submodules).read().splitlines():
+            line = line.strip().split("=")
+            if line[0].strip() == "path":
+                path = line[1].strip()
+            elif line[0].strip() == "url":
+                url = line[1].strip().replace("https://github.com/", "")
+            elif "[" in line:
+                path = ""
+                url = ""
+
+            if path != "" and url != "":
+                get_plugin(url, os.path.join(pluginpath, path))
+
+def get_plugin(reponame, location=None):
     global Plugins
 
     if os.path.splitext(reponame)[1] == ".git":
@@ -291,16 +309,24 @@ def get_plugin(reponame):
     reponame = reponame.replace("\\", "/")
 
     plugin = os.path.basename(reponame)
-    pluginpath = os.path.join(State.packpath, plugin)
+
+    if location == None:
+        pluginpath = os.path.join(State.packpath, plugin)
+    else:
+        pluginpath = location
+
+    if plugin in Plugins:
+        return
 
     Plugins.append(plugin)
 
-    if not plugin in Config["plugins"]:
+    if not plugin in Config["plugins"] or not os.path.exists(pluginpath) or glob.glob(pluginpath + "/*") == []:
         Config["plugins"][plugin] = {
             "last_checked": time.time(),
             "sha": ""
         }
     elif not State.force and Config["plugins"][plugin]["last_checked"] + 3600 > time.time():
+        get_submodules(pluginpath)
         return
 
     repo = State.github.get_repo(reponame)
@@ -308,6 +334,7 @@ def get_plugin(reponame):
     latest = commits[0].sha
 
     Config["plugins"][plugin]["last_checked"] = time.time()
+    Config["plugins"][plugin]["location"] = pluginpath
 
     if latest != Config["plugins"][plugin]["sha"]:
         if os.path.exists(pluginpath):
@@ -319,11 +346,27 @@ def get_plugin(reponame):
         if not os.path.exists(zplugin):
             if not download("https://github.com/" + reponame + "/archive/" + latest + ".zip", zplugin):
                 return
-        extract(zplugin, State.packpath)
-        for pdir in glob.glob(pluginpath + "-*"):
-            os.rename(pdir, pluginpath)
+        zextract = os.path.join(tempfile.gettempdir(), plugin)
+        extract(zplugin, zextract)
+        renamed = ""
+        for pdir in glob.glob(zextract + "/*"):
+            renamed = pdir
+        if renamed != "":
+            files = glob.glob(renamed + "/*") or []
+            dotfiles = glob.glob(renamed + "/.*") or []
+            files.extend(dotfiles)
+            os.mkdir(pluginpath)
+            for pfs in files:
+                os.rename(pfs, pfs.replace(renamed, pluginpath))
+            try:
+                os.remove(renamed)
+                os.remove(zextract)
+            except:
+                pass
 
         Config["plugins"][plugin]["sha"] = latest
+
+        get_submodules(pluginpath)
 
 def get_vimrc():
     if Config["vimrc"] == "":
@@ -357,7 +400,7 @@ def get_vimrc():
 
     if "plugins" in Config:
         for plugin in list(Config["plugins"]):
-            if not os.path.exists(os.path.join(State.packpath, plugin)):
+            if not "location" in Config["plugins"][plugin] or not os.path.exists(Config["plugins"][plugin]["location"]):
                 del Config["plugins"][plugin]
 
 def save():
