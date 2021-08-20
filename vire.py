@@ -357,7 +357,7 @@ def get_plugin(reponame, location=None):
             files.extend(dotfiles)
             os.mkdir(pluginpath)
             for pfs in files:
-                os.rename(pfs, pfs.replace(renamed, pluginpath))
+                shutil.move(pfs, pfs.replace(renamed, pluginpath))
             try:
                 os.remove(renamed)
                 os.remove(zextract)
